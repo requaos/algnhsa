@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"path"
 	pe "github.com/pkg/errors"
 
@@ -20,7 +21,9 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 		return lambdaRequest{}, err
 	}
 	if event.RequestContext.AccountID == "" {
-		return lambdaRequest{}, pe.WithMessage(errAPIGatewayWebsocketUnexpectedRequest, string(payload))
+		msg := map[string]interface{}{}
+		_ = json.Unmarshal(payload, &msg)
+		return lambdaRequest{}, pe.WithMessage(errAPIGatewayWebsocketUnexpectedRequest, fmt.Sprintf("%+v", msg["requestContext"]))
 	}
 
 	req := lambdaRequest{
