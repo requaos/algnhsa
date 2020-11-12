@@ -4,14 +4,21 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"log"
+	"os"
 	"path"
 
 	"github.com/aws/aws-lambda-go/events"
 )
 
 var (
+	Log *log.Logger
 	errAPIGatewayWebsocketUnexpectedRequest = errors.New("expected APIGatewayWebsocketProxyRequest event")
 )
+
+func init() {
+	Log = log.New(os.Stdout, "Socket Request:", log.LstdFlags)
+}
 
 func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Options) (lambdaRequest, error) {
 	var event events.APIGatewayWebsocketProxyRequest
@@ -21,6 +28,7 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 	if event.RequestContext.APIID == "" {
 		return lambdaRequest{}, errAPIGatewayWebsocketUnexpectedRequest
 	}
+	Log.Printf("Event Details: %s %s", event.HTTPMethod, event.Path)
 
 	req := lambdaRequest{
 		HTTPMethod:                      event.HTTPMethod,
