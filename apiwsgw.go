@@ -4,9 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"path"
-	pe "github.com/pkg/errors"
 
 	"github.com/aws/aws-lambda-go/events"
 )
@@ -20,10 +18,8 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 	if err := json.Unmarshal(payload, &event); err != nil {
 		return lambdaRequest{}, err
 	}
-	if event.RequestContext.AccountID == "" {
-		msg := map[string]interface{}{}
-		_ = json.Unmarshal(payload, &msg)
-		return lambdaRequest{}, pe.WithMessage(errAPIGatewayWebsocketUnexpectedRequest, fmt.Sprintf("%+v", msg["requestContext"]))
+	if event.RequestContext.APIID == "" {
+		return lambdaRequest{}, errAPIGatewayWebsocketUnexpectedRequest
 	}
 
 	req := lambdaRequest{
