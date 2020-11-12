@@ -28,7 +28,7 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 	if event.RequestContext.APIID == "" {
 		return lambdaRequest{}, errAPIGatewayWebsocketUnexpectedRequest
 	}
-	Log.Printf("Event Details: %s %s", event.HTTPMethod, event.Path)
+	Log.Printf("Event Details: %s %s %s", event.HTTPMethod, event.Path, event.Body)
 
 	req := lambdaRequest{
 		HTTPMethod:                      event.HTTPMethod,
