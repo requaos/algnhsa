@@ -50,6 +50,7 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 		SourceIP:                        event.RequestContext.Identity.SourceIP,
 		Context:                         newWebsocketProxyRequestContext(ctx, event),
 	}
+	Log.Printf("Event Request Details: %+v", req)
 
 	if opts.UseProxyPath {
 		req.Path = path.Join("/", event.PathParameters["proxy"])
