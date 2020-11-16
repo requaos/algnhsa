@@ -46,7 +46,7 @@ func (opts *Options) ActionPathOverride(action string, method string, path strin
 
 type actionPathOverride struct {
 	HTTPMethod string
-	Path string
+	Path       string
 }
 
 func (opts *Options) setBinaryContentTypeMap() {

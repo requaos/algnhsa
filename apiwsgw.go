@@ -29,7 +29,7 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 	if event.RequestContext.APIID == "" || event.RequestContext.EventType == "" {
 		return lambdaRequest{}, errAPIGatewayWebsocketUnexpectedRequest
 	}
-	Log.Printf("Event Details: %s %s %s", event.RequestContext.EventType, event.RequestContext.RouteKey, event.RequestContext.Status)
+	Log.Printf("Event Details: %s %s %+v", event.RequestContext.EventType, event.RequestContext.RouteKey, event.StageVariables)
 
 	var overriddenPath bool
 	if opts != nil {
@@ -37,6 +37,9 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 			event.Path = v.Path
 			event.HTTPMethod = v.HTTPMethod
 			overriddenPath = true
+
+			// This is behavior that has not been documented or defined anywhere...
+			event.Headers["Connection-Id"] = event.RequestContext.ConnectionID
 		}
 	}
 
