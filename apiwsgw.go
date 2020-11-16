@@ -25,10 +25,14 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 	if err := json.Unmarshal(payload, &event); err != nil {
 		return lambdaRequest{}, err
 	}
-	if event.RequestContext.APIID == "" {
+	if event.RequestContext.APIID == "" || event.RequestContext.EventType == "" {
 		return lambdaRequest{}, errAPIGatewayWebsocketUnexpectedRequest
 	}
-	Log.Printf("Event Details: %+v", event.PathParameters)
+	Log.Printf("Event Details: %s %s %s", event.RequestContext.EventType, event.RequestContext.RouteKey, event.RequestContext.Status)
+
+	if event.RequestContext.EventType == "CONNECT" {
+
+	}
 
 	req := lambdaRequest{
 		HTTPMethod:                      event.HTTPMethod,
