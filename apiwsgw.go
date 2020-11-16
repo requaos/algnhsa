@@ -39,6 +39,9 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 			overriddenPath = true
 
 			// This is behavior that has not been documented or defined anywhere...
+			if event.Headers == nil {
+				event.Headers = map[string]string{}
+			}
 			event.Headers["Connection-Id"] = event.RequestContext.ConnectionID
 		}
 	}
