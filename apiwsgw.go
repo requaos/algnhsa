@@ -13,7 +13,7 @@ import (
 )
 
 var (
-	Log *log.Logger
+	Log                                     *log.Logger
 	errAPIGatewayWebsocketUnexpectedRequest = errors.New("expected APIGatewayWebsocketProxyRequest event")
 )
 
@@ -31,10 +31,12 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 	}
 	Log.Printf("Event Details: %s %s %s", event.RequestContext.EventType, event.RequestContext.RouteKey, event.RequestContext.Status)
 
+	var overriddenPath bool
 	if opts != nil {
 		if v, ok := opts.actionPathOverrideMap[strings.ToLower(event.RequestContext.EventType)]; ok {
 			event.Path = v.Path
 			event.HTTPMethod = v.HTTPMethod
+			overriddenPath = true
 		}
 	}
 
@@ -52,7 +54,7 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 	}
 	Log.Printf("Event Request Details: %+v", req)
 
-	if opts.UseProxyPath {
+	if opts.UseProxyPath && !overriddenPath {
 		req.Path = path.Join("/", event.PathParameters["proxy"])
 	}
 
