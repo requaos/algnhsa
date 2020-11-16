@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/aws/aws-lambda-go/events"
 )
@@ -30,8 +31,11 @@ func newAPIGatewayWebsocketRequest(ctx context.Context, payload []byte, opts *Op
 	}
 	Log.Printf("Event Details: %s %s %s", event.RequestContext.EventType, event.RequestContext.RouteKey, event.RequestContext.Status)
 
-	if event.RequestContext.EventType == "CONNECT" {
-
+	if opts != nil {
+		if v, ok := opts.actionPathOverrideMap[strings.ToLower(event.RequestContext.EventType)]; ok {
+			event.Path = v.Path
+			event.HTTPMethod = v.HTTPMethod
+		}
 	}
 
 	req := lambdaRequest{

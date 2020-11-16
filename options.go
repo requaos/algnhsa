@@ -1,5 +1,7 @@
 package algnhsa
 
+import "strings"
+
 type RequestType int
 
 const (
@@ -36,7 +38,7 @@ func (opts *Options) ActionPathOverride(action string, method string, path strin
 	if opts.actionPathOverrideMap == nil {
 		opts.actionPathOverrideMap = map[string]actionPathOverride{}
 	}
-	opts.actionPathOverrideMap[action] = actionPathOverride{
+	opts.actionPathOverrideMap[strings.ToLower(action)] = actionPathOverride{
 		HTTPMethod: method,
 		Path:       path,
 	}
